@@ -1,0 +1,22 @@
+There are some existing optimization point which may contribute to the performance.
+
+commitID 643c887d (for line number info)
+
+1. inline hot spot functions (perf data as ref)
+2. remove assert in release code (line 102 114 126)
+3. reuse fixed size buffer to reduce malloc (may not be a hotspot according to perf)
+
+line 149 return buffer may come from given parameters and buffer will therefore be allocated by its caller
+
+
+4. manually unfold loop:
+
+line 152 unfold to at least 4 operations at a time or use memcpy (recommended)
+line 155 unfold if needed
+line 163 unfold to at least 4 operations at a time
+
+5. save local_to_be32: the original implementation overuses local_to_be32 to ensure that the output of each function is the same with the result on big-endian machines. It is unnecessary since we just need to ensure that the final result is right. We may release constraint such that only input data need to be turned to local endian. The following operations will proceed in local endian.
+
+6. multi-thread calculation: word generation may use multi threads to speed up, this should be carefully taken care of since false sharing can be harmful. CPU core count related reference: https://stackoverflow.com/questions/4586405/how-to-get-the-number-of-cpus-in-linux-using-c
+
+Other optimization techniques need to be taken care of with precise perf data.

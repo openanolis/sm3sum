@@ -1,0 +1,13 @@
+1. when in check mode, multiple file lists are allowed to be checked
+2. no maximum file count, i.e. all file handling must be dynamic
+3. to be investigated: edge condtions
+
+edge conditions:
+
+1. partial check fail
+2. partial file unaccessible
+3. file all accessible
+4. full check fail
+
+
+dynamic handling: link lists
